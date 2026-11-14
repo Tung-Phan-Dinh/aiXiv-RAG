@@ -1,0 +1,4 @@
+name: control_mantle_core
+description: Control for remove_mantle_core - drops the same NUMBER of documents, chosen at random from outside the topic.
+exclude:
+  random: {matched_to_topic: mantle_core, seed: 0}

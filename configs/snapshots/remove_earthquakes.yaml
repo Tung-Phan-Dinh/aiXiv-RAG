@@ -1,0 +1,3 @@
+name: remove_earthquakes
+description: Full corpus minus every document matching topic earthquakes.
+exclude: {topic: earthquakes}

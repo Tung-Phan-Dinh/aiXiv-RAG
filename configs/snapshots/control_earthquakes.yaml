@@ -1,0 +1,4 @@
+name: control_earthquakes
+description: Control for remove_earthquakes - drops the same NUMBER of documents, chosen at random from outside the topic.
+exclude:
+  random: {matched_to_topic: earthquakes, seed: 0}

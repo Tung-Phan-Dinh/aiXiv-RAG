@@ -1,0 +1,142 @@
+# Frozen topic rules (v2). A document is in a topic if ANY regex matches its title or abstract
+# (case-insensitive; use a scoped (?-i:...) group for acronyms such as AI or LES that collide with
+# ordinary words). Changing a rule changes the hash of every snapshot that uses it.
+# Check sizes and overlaps with: aixiv-rag topics
+#
+# v2 widened machine_learning, turbulence and mantle_core after run 20261015T034036Z showed that
+# questions about them were still answered after "removing" the topic: the surviving papers used
+# vocabulary the v1 rules missed. v1 is kept in configs/archive/topics.v1.yaml so that run stays
+# reproducible. Rules are written for precision: bare 'plume', 'slab', 'inner core' or 'CMB' were
+# tried and rejected (ship plumes, landslide slabs, cyclone inner cores, cosmic microwave background).
+topics:
+  sea_ice:
+    description: Sea ice, ice sheets, ice shelves, glaciers
+    any_of:
+      - 'sea[- ]ice'
+      - 'ice[- ]shel(?:f|ves)'
+      - 'ice[- ]sheets?'
+      - 'glaciers?'
+      - 'cryosphere'
+
+  earthquakes:
+    description: Earthquakes and seismicity
+    any_of:
+      - 'earthquakes?'
+      - 'seismic'
+      - 'aftershocks?'
+      - 'fault (?:zone|slip|rupture)s?'
+
+  enso:
+    description: El Nino / Southern Oscillation
+    any_of:
+      - 'El Ni(?:n|ñ|\\?~n)o'
+      - 'La Ni(?:n|ñ|\\?~n)a'
+      - '\bENSO\b'
+      - 'Southern Oscillation'
+
+  climate_forcing:
+    description: Climate sensitivity, radiative forcing, greenhouse gases
+    any_of:
+      - 'climate sensitivity'
+      - 'radiative forcing'
+      - 'greenhouse'
+      - 'global warming'
+      - 'anthropogenic'
+
+  machine_learning:
+    description: Machine learning applied to geoscience
+    any_of:
+      - 'machine[- ]learn(?:ing|t|ed)'
+      - 'neural (?:networks?|nets?|operators?|differential|ODEs?|representations?|fields?)'
+      - 'deep[- ](?:learning|neural|generative)'
+      - 'convolutional'
+      - 'random forests?'
+      - '(?:generative|latent|denoising|score[- ]based|conditional|probabilistic|rolling|guided|ensemble) diffusion'
+      - 'diffusion[- ]based (?:model|generat|downscal|forecast|emulat)'
+      - 'diffusion models? (?:for|to|trained|conditioned|generat)|with diffusion models?|diffusion network'
+      - 'generative (?:models?|adversarial)'
+      - '(?-i:\bGANs?\b)'
+      - '(?-i:\bAI\b)'
+      - 'artificial intelligence'
+      - 'reinforcement learning'
+      - '(?:un|semi-)?supervised (?:learning|machine|deep|neural|classification|clustering)'
+      - 'data[- ]driven (?:weather|climate|forecast|emulat|surrogate|parameteri[sz]ation|downscal|model)'
+      - 'transformers\b|transformer[- ](?:based|model|architecture|network)'
+      - '(?-i:\bLSTM\b)'
+      - '(?-i:\bCNNs?\b)'
+      - '(?-i:\bU-?Net\b)'
+      - 'autoencoders?'
+      - 'physics[- ]informed'
+      - 'foundation models?'
+      - 'GraphCast|Pangu|FourCastNet|NeuralGCM'
+      - 'emulators?\b'
+      - 'surrogate (?:model|modell?ing)s?'
+      - 'Gaussian[- ]process'
+      - 'support vector|gradient boosting|XGBoost|extreme learning machine'
+
+  turbulence:
+    description: Turbulence and eddy dynamics
+    any_of:
+      - 'turbulen'
+      - 'eddy viscosity'
+      - 'Kolmogorov'
+      - '(?:convective|atmospheric|planetary|stable|stably stratified|nocturnal|neutral(?:ly)?) boundary[- ]layers?'
+      - '(?:convective|thermal|buoyant) plumes?'
+      - '(?:energy|enstrophy|inverse|direct|forward) cascades?'
+      - 'kinetic energy (?:spectr|cascade|budget)'
+      - 'cascades? of (?:kinetic )?energy'
+      - 'energy spectr(?:um|a) of (?:the )?(?:ocean|atmospher|flow|general|global|geophysical)'
+      - '(?:horizontal|vertical|wavenumber|spatial) (?:kinetic )?energy spectr'
+      - 'spectral energy (?:budget|transfer|flux)'
+      - 'inertial range'
+      - '(?<!magnetic )Reynolds[- ]number|Reynolds[- ](?:stress|averaged|decomposition)'
+      - 'large[- ]eddy'
+      - 'eddy[- ](?:diffusiv|covariance|flux|transport|mixing|correlation|resolving|permitting)'
+      - 'mesoscale eddy|mesoscale eddies|ocean eddies'
+      - 'Richardson number'
+      - 'mixing[- ]length'
+      - 'Monin|Obukhov'
+      - '(?-i:\bTKE\b)'
+      - 'diapycnal'
+      - 'internal[- ]wave breaking'
+      - 'surface[- ]layer (?:similarity|flux|theor)'
+      - 'roughness sublayer'
+      - 'canopy (?:flow|layer)s?'
+
+  mantle_core:
+    description: Mantle, core and plate dynamics
+    any_of:
+      - 'mantle'
+      - 'geodynamo'
+      - 'outer core'
+      - 'subduction'
+      - 'plate tectonics?'
+      - 'dynamos?\b'
+      - 'geomagnetic (?:secular|reversal|jerk|dynamo|excursion|polarity)|geomagnetic field (?:reversal|intensity|evolution|generation|model)'
+      - 'secular variation'
+      - 'Earth.s (?:inner |outer |liquid |fluid )?core'
+      - '(?:liquid|fluid|solid) (?:iron )?core'
+      - 'planetary cores?'
+      - 'inner[- ]core (?:boundary|growth|age|nucleation|anisotrop|dynamics|rotation|crystalli)'
+      - 'core[- ]mantle'
+      - '(?:polarity|magnetic|geomagnetic) reversals?'
+      - '(?:thermal|thermo-?chemical) evolution (?:of|in) (?:the )?(?:Earth|planet|core|mantle|terrestrial|rocky|exoplanet|super[- ]Earth)'
+      - 'lithospher(?:e|ic) (?:dynamics|deformation|strength|thickness|rheology|flexure|stress|structure|mantle)'
+      - 'subducting slab|slab (?:dynamics|pull|rollback|detachment|break-?off|dip)'
+      - 'plate (?:motions?|boundar(?:y|ies)|tectonic|reconstruction|kinematic|rotation)s?'
+      - '(?:core|mantle) convection|convection in (?:the )?(?:Earth|core|mantle)'
+      - 'core flows?|core dynamics'
+      - 'geodynamic(?:s|al)? (?:model|simulation|modell?ing)'
+      - 'glacial[- ]isostatic|post-?glacial rebound'
+
+  ocean_circulation:
+    description: Large-scale ocean circulation
+    any_of:
+      - 'ocean circulation'
+      - 'thermohaline'
+      - 'overturning'
+      - '\bAMOC\b'
+      - 'Gulf Stream'
+      - 'Kuroshio'
+      - 'mesoscale eddies'
+      - 'Antarctic Circumpolar'

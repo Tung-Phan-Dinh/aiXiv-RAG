@@ -1,0 +1,4 @@
+name: control_ocean_circulation
+description: Control for remove_ocean_circulation - drops the same NUMBER of documents, chosen at random from outside the topic.
+exclude:
+  random: {matched_to_topic: ocean_circulation, seed: 0}

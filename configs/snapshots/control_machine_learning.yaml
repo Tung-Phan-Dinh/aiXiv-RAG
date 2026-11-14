@@ -1,0 +1,4 @@
+name: control_machine_learning
+description: Control for remove_machine_learning - drops the same NUMBER of documents, chosen at random from outside the topic.
+exclude:
+  random: {matched_to_topic: machine_learning, seed: 0}

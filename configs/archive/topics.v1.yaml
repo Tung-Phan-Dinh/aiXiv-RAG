@@ -1,0 +1,74 @@
+# Frozen topic rules. A document is in a topic if ANY regex matches its title or abstract
+# (case-insensitive). Changing a rule changes the hash of every snapshot that uses it.
+# Check sizes with: aixiv-rag topics
+topics:
+  sea_ice:
+    description: Sea ice, ice sheets, ice shelves, glaciers
+    any_of:
+      - 'sea[- ]ice'
+      - 'ice[- ]shel(?:f|ves)'
+      - 'ice[- ]sheets?'
+      - 'glaciers?'
+      - 'cryosphere'
+
+  earthquakes:
+    description: Earthquakes and seismicity
+    any_of:
+      - 'earthquakes?'
+      - 'seismic'
+      - 'aftershocks?'
+      - 'fault (?:zone|slip|rupture)s?'
+
+  enso:
+    description: El Nino / Southern Oscillation
+    any_of:
+      - 'El Ni(?:n|ñ|\\?~n)o'
+      - 'La Ni(?:n|ñ|\\?~n)a'
+      - '\bENSO\b'
+      - 'Southern Oscillation'
+
+  climate_forcing:
+    description: Climate sensitivity, radiative forcing, greenhouse gases
+    any_of:
+      - 'climate sensitivity'
+      - 'radiative forcing'
+      - 'greenhouse'
+      - 'global warming'
+      - 'anthropogenic'
+
+  machine_learning:
+    description: Machine learning applied to geoscience
+    any_of:
+      - 'machine[- ]learning'
+      - 'neural networks?'
+      - 'deep[- ]learning'
+      - 'convolutional'
+      - 'random forests?'
+
+  turbulence:
+    description: Turbulence and eddy dynamics
+    any_of:
+      - 'turbulen'
+      - 'eddy viscosity'
+      - 'Kolmogorov'
+
+  mantle_core:
+    description: Mantle, core and plate dynamics
+    any_of:
+      - 'mantle'
+      - 'geodynamo'
+      - 'outer core'
+      - 'subduction'
+      - 'plate tectonics?'
+
+  ocean_circulation:
+    description: Large-scale ocean circulation
+    any_of:
+      - 'ocean circulation'
+      - 'thermohaline'
+      - 'overturning'
+      - '\bAMOC\b'
+      - 'Gulf Stream'
+      - 'Kuroshio'
+      - 'mesoscale eddies'
+      - 'Antarctic Circumpolar'

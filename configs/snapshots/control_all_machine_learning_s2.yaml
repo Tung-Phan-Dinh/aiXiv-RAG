@@ -1,0 +1,4 @@
+name: control_all_machine_learning_s2
+description: Harder control for remove_machine_learning - drops the same NUMBER of documents, chosen at random from the WHOLE corpus (topic documents included). Seed 2.
+exclude:
+  random: {matched_to_topic: machine_learning, pool: all, seed: 2}

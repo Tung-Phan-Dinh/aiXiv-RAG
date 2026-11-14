@@ -1,0 +1,250 @@
+# Hand-written evaluation questions. `topic` names the topic (topics.yaml) whose documents are
+# expected to carry the evidence; null = control question. A question is "targeted" in a
+# snapshot that removes its topic. Editing this file changes the run's questions_hash.
+questions:
+  - id: q01
+    topic: sea_ice
+    question: "How does the loss of Arctic sea ice affect atmospheric circulation and mid-latitude weather?"
+  - id: q02
+    topic: sea_ice
+    question: "What mechanisms drive the retreat of Antarctic ice shelves and what are the consequences for sea level?"
+
+  - id: q03
+    topic: earthquakes
+    question: "What statistical laws describe the temporal decay of aftershock sequences?"
+  - id: q04
+    topic: earthquakes
+    question: "How do fault zone properties control whether slip occurs as earthquakes or as slow aseismic creep?"
+
+  - id: q05
+    topic: enso
+    question: "How does El Nino influence global mean temperature and regional rainfall?"
+  - id: q06
+    topic: enso
+    question: "What physical mechanisms determine the irregular period of ENSO events?"
+
+  - id: q07
+    topic: climate_forcing
+    question: "How large is the equilibrium climate sensitivity to a doubling of atmospheric carbon dioxide?"
+  - id: q08
+    topic: climate_forcing
+    question: "What are the main contributions of greenhouse gases and aerosols to radiative forcing?"
+
+  - id: q09
+    topic: machine_learning
+    question: "How are neural networks used to emulate or parameterize processes in weather and climate models?"
+  - id: q10
+    topic: machine_learning
+    question: "Which machine learning methods have been applied to seismic signal detection or earthquake forecasting?"
+
+  - id: q11
+    topic: turbulence
+    question: "How does turbulence in the atmospheric boundary layer control the transport of heat and momentum?"
+  - id: q12
+    topic: turbulence
+    question: "What is known about the energy spectrum and cascade of geophysical turbulence in the ocean and atmosphere?"
+
+  - id: q13
+    topic: mantle_core
+    question: "How does mantle convection couple to plate motion and subduction?"
+  - id: q14
+    topic: mantle_core
+    question: "What do models say about the thermal evolution of the Earth's core and the geodynamo?"
+
+  - id: q15
+    topic: ocean_circulation
+    question: "What controls the strength and variability of the Atlantic meridional overturning circulation?"
+  - id: q16
+    topic: ocean_circulation
+    question: "What sets the strength and structure of the abyssal overturning cell and Antarctic Bottom Water formation?"
+
+  # controls: evidence is not tied to any removable topic
+  - id: q17
+    topic: null
+    question: "How are ocean tides dissipated and what role does internal tide generation play?"
+  - id: q18
+    topic: null
+    question: "What approaches exist for assimilating observations into numerical weather prediction models?"
+  - id: q19
+    topic: null
+    question: "How do changes in atmospheric angular momentum affect the length of day?"
+  - id: q20
+    topic: null
+    question: "How do aerosols and cloud microphysics influence precipitation formation?"
+
+# ---- v2 additions: 6 more questions per topic (8 per topic) + 4 more controls (8 total) ----
+# q01-q20 above are unchanged on purpose: identical prompts stay valid in the LLM cache.
+# Check them before paying for answers:  aixiv-rag audit-questions
+  # sea_ice
+  - id: q21
+    topic: sea_ice
+    question: "How is Arctic sea-ice thickness measured from satellite altimetry and what are the main sources of uncertainty?"
+  - id: q22
+    topic: sea_ice
+    question: "What drives the seasonal and interannual variability of Antarctic sea-ice extent?"
+  - id: q23
+    topic: sea_ice
+    question: "How do ocean heat and basal melting affect the stability of marine-terminating glaciers and ice sheets?"
+  - id: q24
+    topic: sea_ice
+    question: "What is the role of the ice-albedo feedback in polar amplification of warming?"
+  - id: q25
+    topic: sea_ice
+    question: "How well do climate models reproduce the observed trend in Arctic sea-ice extent?"
+  - id: q26
+    topic: sea_ice
+    question: "How does meltwater from the Greenland ice sheet influence sea level and ocean stratification?"
+
+  # earthquakes
+  - id: q27
+    topic: earthquakes
+    question: "How are earthquake early warning systems designed and how reliable are their alerts?"
+  - id: q28
+    topic: earthquakes
+    question: "What does the Gutenberg-Richter law say about the relationship between earthquake magnitude and frequency, and how is the b-value estimated?"
+  - id: q29
+    topic: earthquakes
+    question: "What explains induced seismicity caused by fluid injection or reservoir operations?"
+  - id: q30
+    topic: earthquakes
+    question: "How are earthquake rupture processes imaged using seismic waveforms and geodetic data?"
+  - id: q31
+    topic: earthquakes
+    question: "How do static and dynamic stress changes trigger subsequent earthquakes?"
+  - id: q32
+    topic: earthquakes
+    question: "What do laboratory friction experiments reveal about earthquake nucleation and fault healing?"
+
+  # enso
+  - id: q33
+    topic: enso
+    question: "How well can ENSO events be predicted and what limits forecast skill?"
+  - id: q34
+    topic: enso
+    question: "How does ENSO modulate tropical cyclone activity and monsoon rainfall?"
+  - id: q35
+    topic: enso
+    question: "How are the amplitude and frequency of El Nino events expected to change under global warming?"
+  - id: q36
+    topic: enso
+    question: "What role do westerly wind bursts and ocean-atmosphere coupling play in the onset of El Nino?"
+  - id: q37
+    topic: enso
+    question: "How do central Pacific and eastern Pacific El Nino events differ?"
+  - id: q38
+    topic: enso
+    question: "How do ENSO teleconnections influence mid-latitude and polar climate?"
+
+  # climate_forcing
+  - id: q39
+    topic: climate_forcing
+    question: "How are effective radiative forcing and climate feedbacks estimated from observations and models?"
+  - id: q40
+    topic: climate_forcing
+    question: "What do paleoclimate records imply about the magnitude of climate sensitivity?"
+  - id: q41
+    topic: climate_forcing
+    question: "How do cloud feedbacks contribute to uncertainty in climate sensitivity?"
+  - id: q42
+    topic: climate_forcing
+    question: "What is the transient climate response and how does it relate to cumulative carbon emissions?"
+  - id: q43
+    topic: climate_forcing
+    question: "How large is the contribution of methane and other non-CO2 greenhouse gases to global warming?"
+  - id: q44
+    topic: climate_forcing
+    question: "How do the water vapor and lapse rate feedbacks shape the warming response to greenhouse gases?"
+
+  # machine_learning
+  - id: q45
+    topic: machine_learning
+    question: "How are deep learning models used for precipitation nowcasting and medium-range weather forecasting?"
+  - id: q46
+    topic: machine_learning
+    question: "What machine learning approaches have been used for seismic phase picking and earthquake catalog building?"
+  - id: q47
+    topic: machine_learning
+    question: "How can physical constraints be built into neural networks for geophysical inverse problems?"
+  - id: q48
+    topic: machine_learning
+    question: "What are the main limitations of machine learning emulators of climate models, such as instability and extrapolation?"
+  - id: q49
+    topic: machine_learning
+    question: "How are machine learning methods used to downscale climate projections or correct model biases?"
+  - id: q50
+    topic: machine_learning
+    question: "How is machine learning applied to predict ocean variables such as sea surface temperature?"
+
+  # turbulence
+  - id: q51
+    topic: turbulence
+    question: "What is Monin-Obukhov similarity theory and where does it break down in stable boundary layers?"
+  - id: q52
+    topic: turbulence
+    question: "How do large-eddy simulations represent subgrid-scale turbulence in the atmosphere?"
+  - id: q53
+    topic: turbulence
+    question: "What causes intermittency in stably stratified turbulence?"
+  - id: q54
+    topic: turbulence
+    question: "How are turbulent dissipation and mixing in the stratified ocean interior measured and parameterized?"
+  - id: q55
+    topic: turbulence
+    question: "How do forward and inverse energy cascades arise in rotating stratified turbulence?"
+  - id: q56
+    topic: turbulence
+    question: "How are turbulent eddy fluxes of heat and momentum parameterized in ocean and atmosphere models?"
+
+  # mantle_core
+  - id: q57
+    topic: mantle_core
+    question: "What drives geomagnetic polarity reversals and secular variation of the Earth's magnetic field?"
+  - id: q58
+    topic: mantle_core
+    question: "How do mantle plumes and large low-shear-velocity provinces relate to the core-mantle boundary?"
+  - id: q59
+    topic: mantle_core
+    question: "What constraints exist on the age and growth of the Earth's inner core?"
+  - id: q60
+    topic: mantle_core
+    question: "How do slab dynamics and trench retreat shape the evolution of subduction zones?"
+  - id: q61
+    topic: mantle_core
+    question: "What does seismic tomography reveal about the structure and flow of the Earth's mantle?"
+  - id: q62
+    topic: mantle_core
+    question: "How well do numerical dynamo simulations reproduce observed features of the geomagnetic field?"
+
+  # ocean_circulation
+  - id: q63
+    topic: ocean_circulation
+    question: "How is the Atlantic meridional overturning circulation monitored and what do observations show about its recent trend?"
+  - id: q64
+    topic: ocean_circulation
+    question: "What role do wind forcing and the Southern Ocean play in driving the global overturning circulation?"
+  - id: q65
+    topic: ocean_circulation
+    question: "How does the Gulf Stream and its separation from the coast affect North Atlantic climate?"
+  - id: q66
+    topic: ocean_circulation
+    question: "How do ocean models represent western boundary currents such as the Kuroshio?"
+  - id: q67
+    topic: ocean_circulation
+    question: "How does freshwater input influence deep water formation and the stability of the thermohaline circulation?"
+  - id: q68
+    topic: ocean_circulation
+    question: "What controls the transport of the Antarctic Circumpolar Current?"
+
+  # controls: evidence not tied to any removable topic
+  - id: q69
+    topic: null
+    question: "How do sudden stratospheric warmings and the polar vortex influence surface weather?"
+  - id: q70
+    topic: null
+    question: "How are gravity waves generated, how do they propagate, and how do they break in the middle atmosphere?"
+  - id: q71
+    topic: null
+    question: "How is terrestrial water storage change detected using satellite gravimetry?"
+  - id: q72
+    topic: null
+    question: "What controls the intensity and structure of tropical cyclones?"

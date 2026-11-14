@@ -1,0 +1,3 @@
+name: upto_2020
+description: Only papers first submitted in or before 2020.
+include: {year_max: 2020}

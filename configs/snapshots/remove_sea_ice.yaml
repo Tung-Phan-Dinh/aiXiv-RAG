@@ -1,0 +1,3 @@
+name: remove_sea_ice
+description: Full corpus minus every document matching topic sea_ice.
+exclude: {topic: sea_ice}

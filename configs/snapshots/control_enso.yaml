@@ -1,0 +1,4 @@
+name: control_enso
+description: Control for remove_enso - drops the same NUMBER of documents, chosen at random from outside the topic.
+exclude:
+  random: {matched_to_topic: enso, seed: 0}

@@ -1,0 +1,3 @@
+name: remove_ocean_circulation
+description: Full corpus minus every document matching topic ocean_circulation.
+exclude: {topic: ocean_circulation}

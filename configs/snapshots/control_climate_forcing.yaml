@@ -1,0 +1,4 @@
+name: control_climate_forcing
+description: Control for remove_climate_forcing - drops the same NUMBER of documents, chosen at random from outside the topic.
+exclude:
+  random: {matched_to_topic: climate_forcing, seed: 0}

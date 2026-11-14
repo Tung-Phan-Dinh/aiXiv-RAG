@@ -1,0 +1,4 @@
+name: control_all_sea_ice_s1
+description: Harder control for remove_sea_ice - drops the same NUMBER of documents, chosen at random from the WHOLE corpus (topic documents included). Seed 1.
+exclude:
+  random: {matched_to_topic: sea_ice, pool: all, seed: 1}

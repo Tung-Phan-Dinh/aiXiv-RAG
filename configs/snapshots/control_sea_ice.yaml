@@ -1,0 +1,4 @@
+name: control_sea_ice
+description: Control for remove_sea_ice - drops the same NUMBER of documents, chosen at random from outside the topic.
+exclude:
+  random: {matched_to_topic: sea_ice, seed: 0}

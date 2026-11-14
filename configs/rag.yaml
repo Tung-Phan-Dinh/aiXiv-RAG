@@ -1,0 +1,38 @@
+k: 10                       # documents given to the model per question
+backend: faiss              # faiss | numpy (exact search either way)
+reference_snapshot: full    # every metric is measured relative to this snapshot
+
+openai:
+  model: gpt-6.1-sol        # changing this invalidates the answer cache comparison
+  max_output_tokens: 3000   # hidden reasoning tokens count against this; an incomplete response raises, it is never cached
+  reasoning_effort: low     # none|minimal|low|medium|high|xhigh|max; which values a model accepts differs. null = API default
+  temperature: 0.0          # dropped automatically if the model rejects sampling parameters (reasoning models do)
+
+# Local model served by Ollama (`--answerer ollama`), e.g. on a home PC over Tailscale.
+# Put RAGEBLATE_OLLAMA_HOST=<pc-tailscale-name> in .env (it overrides `host`, and keeps the name out of git).
+# Sized for a 12 GB GPU: a ~14B model at 4-bit (~9 GB) + an 8k context (~1.5 GB of KV cache).
+# A different model or tag is a different experiment: never mix its answers with OpenAI's in one comparison,
+# and do not re-pull the tag mid-study (the cache records the weights' digest so you can check).
+ollama:
+  host: localhost
+  model: qwen3:14b          # must be pulled on the PC: `ollama pull qwen3:14b`
+  num_ctx: 8192             # prompts are ~2.5k tokens; Ollama silently truncates past this, so the client refuses to
+  max_output_tokens: 1024
+  temperature: 0.0          # greedy: deterministic, so --repeats draws are identical (noise floor 0 by construction)
+  think: false              # qwen3 thinks by default (slow, eats max_output_tokens); null for models without a thinking mode
+  seed: 0
+
+# USD per million tokens, used ONLY for the cost estimate printed before a run. Check these against
+# OpenAI's pricing page; a model missing here just gets no dollar estimate.
+pricing_usd_per_mtok:
+  gpt-6.1-sol: {input: 2.0, output: 10.0}
+  gpt-6-astra: {input: 10.0, output: 50.0}
+  gpt-6-luna: {input: 0.10, output: 0.50}
+
+# Offline baseline (no LLM). Abstains when the best retrieval score is below min_score,
+# which depends on the embedder, hence keyed by embedder tag.
+extractive:
+  n_sentences: 3
+  min_score:
+    hash-1024: 0.20
+    bge-small: 0.55

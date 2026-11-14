@@ -1,0 +1,3 @@
+name: remove_climate_forcing
+description: Full corpus minus every document matching topic climate_forcing.
+exclude: {topic: climate_forcing}

@@ -1,0 +1,3 @@
+name: since_2015
+description: Only papers first submitted in 2015 or later (the opposite temporal cut).
+include: {year_min: 2015}

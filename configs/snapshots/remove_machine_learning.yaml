@@ -1,0 +1,3 @@
+name: remove_machine_learning
+description: Full corpus minus every document matching topic machine_learning.
+exclude: {topic: machine_learning}
