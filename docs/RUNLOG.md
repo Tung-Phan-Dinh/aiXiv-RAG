@@ -21,7 +21,7 @@ Times are UTC (as in `run.json`). AEDT = UTC+11.
 | 2026-11-14 | `905bc72` | Local answerer (`--answerer ollama`), first commit of the repo | New model family; answers cached under provider `ollama` and never mixed with OpenAI's | — |
 | 2026-11-14 | `beae559` | Ollama connection retries (10/30/60 s); tests isolated from `.env` | None on answers: only connection failures are retried, before the request reaches the model | `local-q35-v2`, `local-q3-14b-v1` ran with this code **uncommitted** (see note A) |
 | 2026-11-15 | `b8b482c` | **Abstention rule `first-line` → `anywhere`** (`rag.ABSTAIN_RULE`): sentinel counted anywhere in the answer as a whole word | Abstention can only go **up** (0 abstentions lost, 84 gained over 3 runs). GPT runs unchanged (GPT always put the sentinel first). Abstention is stored at run time, so earlier runs were re-derived from cache as `*-r2` | `local-*` (first-line) / `local-*-r2` (anywhere) |
-| 2026-11-15 | (this commit) | `run.json` records `git_dirty`; report header prints the abstention rule and any uncommitted files | None on numbers; traceability only | from the next run on |
+| 2026-11-15 | `01d60df` | `run.json` records `git_dirty`; report header prints the abstention rule and any uncommitted files | None on numbers; traceability only | from the next run on |
 
 **Note A.** `run.json` before 2026-11-15 records only `HEAD`, not uncommitted changes. `local-q35-v1` ran at `905bc72` plus the
 uncommitted test-isolation fix; `local-q35-v2` and `local-q3-14b-v1` also had the uncommitted retry code. Neither change
