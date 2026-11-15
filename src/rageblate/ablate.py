@@ -145,6 +145,7 @@ def run(
                 for s in snapshots
             },
             "git_commit": _git_commit(),
+            "git_dirty": _git_dirty(),  # [] = clean; non-empty = run used uncommitted changes to these files
             "versions": _versions(),
             **(meta_extra or {}),
         }
@@ -157,6 +158,17 @@ def _git_commit() -> str | None:
         out = subprocess.run(["git", "rev-parse", "HEAD"], capture_output=True, text=True, check=True)
         return out.stdout.strip()
     except Exception:  # noqa: BLE001 - no git / no commits yet is fine
+        return None
+
+
+def _git_dirty() -> list[str] | None:
+    """Tracked source/config files with uncommitted changes: the commit alone does not describe this run's code.
+    Only src/, configs/ and pyproject.toml matter for results; untracked files and docs are ignored."""
+    try:
+        out = subprocess.run(["git", "status", "--porcelain", "--untracked-files=no", "--", "src", "configs", "pyproject.toml"],
+                             capture_output=True, text=True, check=True)
+        return [line[3:] for line in out.stdout.splitlines() if line.strip()]
+    except Exception:  # noqa: BLE001
         return None
 
 

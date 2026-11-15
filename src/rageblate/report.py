@@ -255,7 +255,8 @@ def build_report(run_dir: Path, with_drift: bool = True) -> Path:
         "",
         *[b + "\n" for b in banners],
         f"- created: {meta['created_utc']}  |  answerer: `{meta['answerer']}`  |  embedder: `{emb['tag']}` ({emb.get('model') or emb.get('backend')})",
-        (f"- k = {meta['k']}, backend = {meta['backend']}, reference snapshot = `{ref}`, git = {meta.get('git_commit') or 'n/a'}, "
+        (f"- k = {meta['k']}, backend = {meta['backend']}, reference snapshot = `{ref}`, git = {meta.get('git_commit') or 'n/a'}"
+         f"{' **+ uncommitted changes: ' + ', '.join(meta['git_dirty']) + '**' if meta.get('git_dirty') else ''}, "
          f"questions = {df['question_id'].nunique()}, draws/prompt on the reference = {meta.get('repeats', 1)}, "
          f"abstention rule = `{meta.get('abstain_rule', 'first-line')}`"),
         "",
