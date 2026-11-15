@@ -38,7 +38,7 @@ from .index import build_index
 from .llm import IncompleteResponseError, LocalServerError, MissingAPIKeyError, OllamaLLM, OpenAILLM
 from .paths import RUNS
 from .plan import build_plan, execute
-from .rag import PROMPT_VERSION, PROMPTS, Answerer, ExtractiveAnswerer, OpenAIAnswerer
+from .rag import ABSTAIN_RULE, PROMPT_VERSION, PROMPTS, Answerer, ExtractiveAnswerer, OpenAIAnswerer
 from .retrieve import to_hits
 from .snapshot import Snapshot, resolve_by_name
 
@@ -131,6 +131,7 @@ def run(
             "embedder": {"tag": ctx.tag, **ctx.meta},
             "questions_hash": stable_hash(questions),
             "prompt_version": getattr(answerer, "prompt_version", PROMPT_VERSION),
+            "abstain_rule": ABSTAIN_RULE,
             "repeats": repeats,
             "repeat_snapshots": sorted(repeat_snapshots) if repeat_snapshots is not None else None,
             "snapshots": {

@@ -84,6 +84,10 @@ what the noise floor is measured from.
 - Reasoning models reject `temperature`, so the wrapper drops it. Fresh calls are then not deterministic; the on-disk cache
   (`data/cache/llm`) is what makes a finished run reproducible. Never delete it mid-study, and never mix cached answers from
   different models or efforts in one comparison.
+- Abstention = the prompt's sentinel appearing anywhere in the answer (`rag.ABSTAIN_RULE = "anywhere"`, since 2026-11-15;
+  before that, only on the first line). The rule is in each `run.json` (`abstain_rule`; missing = `first-line`) and report header.
+  Abstention stored in `results.parquet` is decided at run time, so a rule change needs a re-run from cache (free), not just
+  `report`. A refusal written in prose with no sentinel is never counted. Every run is listed in `docs/RUNLOG.md`: add yours.
 - Abstention is a sentinel from one prompt and one model. Do not state a finding about abstention as general until `compare-runs`
   shows it survives `--prompt-version v2` (and ideally another `--model`).
 - `answer_change` counts an abstention flip as 1.0 and two abstentions as 0; it is a convention, not a physical quantity.

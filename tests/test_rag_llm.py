@@ -20,10 +20,19 @@ def test_extract_citations_formats():
     assert rag.extract_citations("[0704.0001] again [0704.0001]") == ["0704.0001"]  # de-duplicated
 
 
-def test_is_abstain_uses_sentinel_on_first_line():
+def test_is_abstain_finds_the_sentinel_anywhere():
     assert rag.is_abstain("INSUFFICIENT_EVIDENCE\nNothing about this topic.")
     assert rag.is_abstain("\n  INSUFFICIENT_EVIDENCE")
-    assert not rag.is_abstain("The context says INSUFFICIENT_EVIDENCE is rare.")
+    # real shapes from local models (2026-11-15 survey): refusal sentence first, sentinel after it
+    assert rag.is_abstain("The context documents do not provide information on X. INSUFFICIENT_EVIDENCE\nNothing on X.")
+    assert rag.is_abstain("Based on the provided documents, there is **INSUFFICIENT_EVIDENCE** to answer this.")
+    assert rag.is_abstain("While [2410.19934] discusses torques, none describe the mechanism. NO_SUPPORTING_EVIDENCE",
+                          sentinel=rag.ABSTAIN_V2)
+    assert rag.is_abstain("...cannot be answered based on the given context [INSUFFICIENT_EVIDENCE].")
+    # whole word only, and each prompt version has its own sentinel
+    assert not rag.is_abstain("INSUFFICIENT_EVIDENCES are not a thing")
+    assert not rag.is_abstain("INSUFFICIENT_EVIDENCE", sentinel=rag.ABSTAIN_V2)
+    assert not rag.is_abstain("Ocean heat uptake is driven by [0704.0001].")
     assert not rag.is_abstain("")
 
 

@@ -2,9 +2,9 @@
 
 Conventions the metrics rely on:
   * Every claim is cited with the arXiv id in square brackets: [0704.0001] or [physics/0501001].
-  * If the context cannot support an answer, the model must start with the prompt's sentinel
+  * If the context cannot support an answer, the prompt asks the model to start with its sentinel
     (INSUFFICIENT_EVIDENCE in v1, NO_SUPPORTING_EVIDENCE in v2). We detect abstention by that
-    sentinel, never by guessing from free text.
+    sentinel appearing anywhere in the answer (`ABSTAIN_RULE`), never by guessing from free text.
   * Two prompt versions exist so a conclusion can be checked against a reworded prompt and a
     different sentinel (`ablate --prompt-version v2`, then `compare-runs`). A prompt is part of the
     LLM cache key, so versions never share answers.
@@ -67,9 +67,19 @@ def extract_citations(text: str) -> list[str]:
     return seen
 
 
+# How abstention is detected. Recorded in run.json and the report header, so every result can be traced
+# to the rule that produced it (see docs/RUNLOG.md).
+#   "first-line" (until 2026-11-15): the sentinel starts the first non-empty line, as the prompt asks.
+#   "anywhere"   (since 2026-11-15): the sentinel appears anywhere as a whole word. Local models often write a
+#                refusal sentence first and the sentinel after it; in every one of ~3,000 distinct answers
+#                reviewed, an answer containing the sentinel was declining. GPT always put it first, so its
+#                results are identical under both rules. A refusal with no sentinel at all is still NOT
+#                counted: we never guess abstention from free text (that is the judge's job).
+ABSTAIN_RULE = "anywhere"
+
+
 def is_abstain(text: str, sentinel: str = ABSTAIN) -> bool:
-    lines = [ln.strip() for ln in text.strip().splitlines() if ln.strip()]
-    return bool(lines) and lines[0].startswith(sentinel)
+    return re.search(rf"\b{re.escape(sentinel)}\b", text) is not None
 
 
 @dataclass
