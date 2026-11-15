@@ -199,14 +199,20 @@ class _FakeOllama:
         }
 
 
+@pytest.fixture(autouse=True)
+def _no_real_ollama_host(monkeypatch):
+    """Never read a real .env here: a RAGEBLATE_OLLAMA_HOST in it would point these tests at a real PC."""
+    monkeypatch.delenv("RAGEBLATE_OLLAMA_HOST", raising=False)
+    monkeypatch.setattr(llm_mod, "load_dotenv", lambda *a, **k: None)
+
+
 def _ollama(tmp_path, server, **kw):
     from rageblate.llm import OllamaLLM
 
     return OllamaLLM("qwen3:14b", host="homepc", cache_dir=tmp_path, post=server, **kw)
 
 
-def test_ollama_sends_context_window_and_caches(tmp_path, monkeypatch):
-    monkeypatch.delenv("RAGEBLATE_OLLAMA_HOST", raising=False)
+def test_ollama_sends_context_window_and_caches(tmp_path):
     server = _FakeOllama()
     llm = _ollama(tmp_path, server, num_ctx=8192, think=False)
     assert llm.host == "http://homepc:11434" and not llm.paid
@@ -246,6 +252,40 @@ def test_ollama_answerer_name_and_unreachable_server(tmp_path):
     ans = rag.OpenAIAnswerer(_ollama(tmp_path, _FakeOllama())).answer("q", [hit(1)])
     assert ans.answerer == "ollama:qwen3:14b:no-think:v1" and ans.cited_ids == ["0704.0001"]
 
-    dead = OllamaLLM("m", host="127.0.0.1:9", timeout=2, cache_dir=tmp_path)  # port 9: nothing listens
+    dead = OllamaLLM("m", host="127.0.0.1:9", timeout=2, retries=0, cache_dir=tmp_path)  # port 9: nothing listens
     with pytest.raises(LocalServerError, match="Tailscale"):
         dead.complete("s", "u")
+
+
+def test_unreachable_server_is_retried_then_succeeds(monkeypatch):
+    import urllib.error
+
+    from rageblate import llm as llm_mod
+
+    waits, calls = [], []
+
+    class _Resp:
+        def __enter__(self):
+            return self
+
+        def __exit__(self, *a):
+            return False
+
+        def read(self):
+            return b'{"ok": true}'
+
+    def flaky(req, timeout):
+        calls.append(1)
+        if len(calls) < 3:
+            raise urllib.error.URLError("connection refused")
+        return _Resp()
+
+    monkeypatch.setattr(llm_mod.urllib.request, "urlopen", flaky)
+    monkeypatch.setattr(llm_mod.time, "sleep", waits.append)
+    assert llm_mod._http_post_json("http://x/api/chat", {"a": 1}, timeout=1) == {"ok": True}
+    assert len(calls) == 3 and waits == [10, 30]
+
+    calls.clear()
+    monkeypatch.setattr(llm_mod.urllib.request, "urlopen", lambda req, timeout: (_ for _ in ()).throw(urllib.error.URLError("down")))
+    with pytest.raises(llm_mod.LocalServerError, match="Tailscale"):
+        llm_mod._http_post_json("http://x/api/chat", {}, timeout=1, retries=2)

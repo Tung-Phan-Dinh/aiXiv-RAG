@@ -25,6 +25,7 @@ from __future__ import annotations
 import hashlib
 import json
 import os
+import time
 import urllib.error
 import urllib.request
 from dataclasses import dataclass
@@ -181,21 +182,33 @@ def _normalise_host(host: str) -> str:
     return host
 
 
-def _http_post_json(url: str, payload: dict | None, timeout: float) -> dict:
-    """POST (or GET when payload is None) JSON with the standard library; raises LocalServerError."""
+RETRY_WAITS = (10, 30, 60)  # seconds before each retry of an unreachable server (~100 s in all)
+
+
+def _http_post_json(url: str, payload: dict | None, timeout: float, retries: int = len(RETRY_WAITS)) -> dict:
+    """POST (or GET when payload is None) JSON with the standard library; raises LocalServerError.
+
+    Only *connection* failures are retried (the PC sleeping, Tailscale reconnecting): the request never
+    reached the model, so a retry cannot change the answer. An HTTP error from the server is not retried."""
     data = None if payload is None else json.dumps(payload).encode("utf-8")
-    req = urllib.request.Request(url, data=data, headers={"Content-Type": "application/json"})
-    try:
-        with urllib.request.urlopen(req, timeout=timeout) as r:
-            return json.loads(r.read().decode("utf-8"))
-    except urllib.error.HTTPError as e:
-        detail = e.read().decode("utf-8", "replace")[:300]
-        raise LocalServerError(f"Ollama returned HTTP {e.code} for {url}: {detail}") from None
-    except (urllib.error.URLError, TimeoutError, ConnectionError) as e:
-        raise LocalServerError(
-            f"cannot reach Ollama at {url} ({e}). Is Tailscale up on both machines, and is Ollama listening on "
-            "the Tailscale interface (OLLAMA_HOST=0.0.0.0 on the PC)?"
-        ) from None
+    for attempt in range(retries + 1):
+        req = urllib.request.Request(url, data=data, headers={"Content-Type": "application/json"})
+        try:
+            with urllib.request.urlopen(req, timeout=timeout) as r:
+                return json.loads(r.read().decode("utf-8"))
+        except urllib.error.HTTPError as e:
+            detail = e.read().decode("utf-8", "replace")[:300]
+            raise LocalServerError(f"Ollama returned HTTP {e.code} for {url}: {detail}") from None
+        except (urllib.error.URLError, TimeoutError, ConnectionError) as e:
+            if attempt < retries:
+                wait = RETRY_WAITS[min(attempt, len(RETRY_WAITS) - 1)]
+                print(f"  Ollama unreachable ({e}); retry {attempt + 1}/{retries} in {wait}s", flush=True)
+                time.sleep(wait)
+                continue
+            raise LocalServerError(
+                f"cannot reach Ollama at {url} ({e}). Is Tailscale up on both machines, and is Ollama listening on "
+                "the Tailscale interface (OLLAMA_HOST=0.0.0.0 on the PC)?"
+            ) from None
 
 
 class OllamaLLM:
@@ -224,6 +237,7 @@ class OllamaLLM:
         think: bool | None = False,
         seed: int = 0,
         timeout: float = 600.0,
+        retries: int = len(RETRY_WAITS),
         cache_dir: Path = CACHE / "llm",
         post=None,
     ):
@@ -235,7 +249,7 @@ class OllamaLLM:
         # plan.usage_stats and the answerer name read this; for Ollama it records thinking on/off
         self.reasoning_effort = {True: "think", False: "no-think", None: None}[think]
         self.cache_dir = Path(cache_dir)
-        self._post = post or (lambda url, payload: _http_post_json(url, payload, self.timeout))
+        self._post = post or (lambda url, payload: _http_post_json(url, payload, self.timeout, retries))
         self._digest: str | None = None
 
     def key(self, system: str, user: str, sample: int = 0) -> str:
